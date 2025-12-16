@@ -1,6 +1,6 @@
 import { Client } from "../entity/client.entity"
 
-export interface IClientRepository {
+export interface ClientRepository {
     save(client: Client): Promise<void>
     findById(client_id: string): Promise<Client | null>
     findByEmail(client_Email: string): Promise<Client | null>

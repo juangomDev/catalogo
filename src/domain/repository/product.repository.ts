@@ -1,6 +1,6 @@
 import { Product } from "../entity/product.entity"
 
-export interface IProductRepository {
+export interface ProductRepository {
     save(product: Product): Promise<void>
     findById(product_id: string): Promise<Product | null>
     findAllProductsByClientId(client_id: string): Promise<Product[]>
