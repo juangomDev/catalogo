@@ -60,7 +60,7 @@ export class ApiServer {
     }
 
     private setupRoutes(): void {
-        
+
         this.app.get('/health', (_req, res) => {
             res.json({
                 status: 'OK',
@@ -79,6 +79,12 @@ export class ApiServer {
 
         // Docs
         this.app.use('/api-docs', express.static('docs'));
+
+        // Error handling middleware
+        this.app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+            // console.error(err);
+            res.status(500).json( err );
+        });
     }
 
 
