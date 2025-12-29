@@ -1,3 +1,4 @@
+import { InvalidName } from "../exceptions/root.exceptions";
 import { ProductImageUrl } from "../value_object/url.vo";
 import { RootEntity } from "./root.entity";
 
@@ -17,6 +18,11 @@ export class Product extends RootEntity {
     private imageUrl: ProductImageUrl;
 
     constructor(id: string, client_Id: string, name: string, description: string, imageUrl: ProductImageUrl, createdAt: Date,) {
+
+        if (!name || name.trim().length === 0) {
+            throw new InvalidName('The product name cannot be empty');
+        }
+
         super(id, createdAt)
         this.client_Id = client_Id
         this.name = name
@@ -35,10 +41,7 @@ export class Product extends RootEntity {
     public updateImageUrl(url: ProductImageUrl): void {
         this.imageUrl = url
     }
-    
-    // ============================
-    // Getter
-    // ============================
+
 
     public getName(): string {
         return this.name
@@ -48,8 +51,8 @@ export class Product extends RootEntity {
         return this.description
     }
 
-    public getImageUrl(): string {
-        return this.imageUrl.getValue()
+    public getImageUrl(): ProductImageUrl {
+        return this.imageUrl
     }
 
     public DTO(): ProductDTO {
@@ -58,7 +61,7 @@ export class Product extends RootEntity {
             client_Id: this.client_Id,
             name: this.name,
             description: this.description,
-            imageUrl: this.imageUrl.getValue(),
+            imageUrl: this.imageUrl.getAddress(),
             createdAt: this.getCreatedAt()
         }
     }

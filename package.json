@@ -14,18 +14,20 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
-    "@types/uuid": "^10.0.0",
     "eslint": "9.39.2",
     "jest": "30.2.0",
     "ts-jest": "29.4.6",
     "ts-node-dev": "2.0.0",
-    "typescript": "5.9.3",
-    "uuid": "^13.0.0"
+    "typescript": "5.9.3"
   },
   "dependencies": {
-    "express": "5.2.1"
+    "cors": "2.8.5",
+    "express": "5.2.1",
+    "express-rate-limit": "8.2.1",
+    "helmet": "8.1.0"
   },
   "eslintConfig": {
     "env": {
@@ -47,14 +49,14 @@
     ],
     "rules": {}
   },
-
-
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-
     "transformIgnorePatterns": [
-      "node_modules/(?!uuid)/" 
-    ]
+      "node_modules/(?!uuid)/"
+    ],
+    "moduleNameMapper": {
+      "^uuid$": "uuid"
+    }
   }
 }

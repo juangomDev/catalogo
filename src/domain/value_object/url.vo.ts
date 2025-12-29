@@ -2,51 +2,52 @@
 
 // value object para representar una url
 
-export class ValidateUrl {
-    static validateUrl(url: string): boolean {
-        try {
-            const parsedUrl = new URL(url);
+import { InvalidImageFormat } from "../exceptions/root.exceptions";  9 
 
-            if (!parsedUrl.hostname || parsedUrl.protocol !== 'https:') return false;
-
-            return true
-        }catch {
-            return false
-        }
-    }
-}
 
 export class Url {
-    private readonly value: string
+    private readonly value: URL
+    private readonly address: string
 
-    constructor( url: string ) {
+    constructor(url: URL) {
         this.value = url
+        this.address = url.href
     }
 
-    static create( url: string ): Url {
-        if ( !ValidateUrl.validateUrl(url) ){
-            throw new Error('Invalid URL format')
-        }
-
-        return new Url(url)
+    public getAddress(): string {
+        return this.address
     }
-    
-    public getValue(): string {
+
+    public getValue(): URL {
         return this.value
     }
 }
 
 export class ProductImageUrl extends Url {
-    public static create(url: string): ProductImageUrl {
-        const base = Url.create(url); 
-        
-        const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
-        const pathname = new URL(base.getValue()).pathname.toLowerCase();
-        
-        if (!imageExtensions.some(ext => pathname.endsWith(ext))) {
-            throw new Error('La URL de la imagen debe apuntar a un archivo de imagen válido.');
+
+    private static readonly IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'] as const
+
+    private constructor(url: URL) {
+        super(url);
+    }
+
+    public static create(url: URL): ProductImageUrl {
+        const pathname = url.pathname.toLowerCase();
+
+        if (!this.IMAGE_EXTENSIONS.some(ext => pathname.endsWith(ext))) {
+            throw new InvalidImageFormat('The image url must end with a valid image extension ' + this.IMAGE_EXTENSIONS.join(', '));
         }
 
-        return new ProductImageUrl(base.getValue());
+        return new ProductImageUrl(url);
+    }
+
+    public getImageExtension(): string {
+        const pathname = this.getValue().pathname.toLowerCase();
+        for (const ext of ProductImageUrl.IMAGE_EXTENSIONS) {
+
+            if (pathname.endsWith(ext)) return ext;
+
+        }
+        return '';
     }
 }

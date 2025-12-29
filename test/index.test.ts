@@ -1,30 +1,32 @@
-import { Suma } from "../src/index";
-import { Email, ValidateEmail } from "../src/domain/value_object/email.vo";
-import { Client } from "../src/domain/entity/client.entity";
+import { Email } from "../src/domain/value_object/email.vo";
+import { User } from "../src/domain/entity/user.entity";
 import { ProductImageUrl, Url } from "../src/domain/value_object/url.vo";
-import { CreateClientCommand, CreateClientHandler } from "../src/application/use_cases";
-import { ClientRepository } from "../src/domain/repository/client.repository";
+import { CreateUserCommand } from "../src/application/user/command/user_command";
+import { CreateUserHandler } from "../src/application/user/create_user.handler";
+import { UserRepository } from "../src/domain/repository/user.repository";
 
-test("suma de 2 + 3 debe ser 5", () => {
-    expect(Suma(2, 3)).toBe(5)
-})
 
 test("crear un email valido", () => {
     const email = Email.create('t@e.com')
-
     expect(email.getValue()).toBe('t@e.com')
 })
 
-test("crear un client", () => {
+test("crear un user", () => {
     const email = Email.create('test@example.com')
-    const user = new Client("1", "Test User", email, "A test description", new Date())
+    const user = new User("1", "Test User", email, "A test description", new Date())
 
     expect(user.getName()).toBe("Test User")
 })
 
-test("cambiar email del client", () => {
+test("email no valido", () => {
+    expect(() => {
+        Email.create("invalid-email")
+    }).toThrow({ message: "Email invalid-email is not valid", name: "InvalidEmailError" })
+})
+
+test("cambiar email del user", () => {
     const email = Email.create('test@example.com')
-    const user = new Client("1", "Test User", email, "A test description", new Date())
+    const user = new User("1", "Test User", email, "A test description", new Date())
 
     const email2 = Email.create('test2@example.com')
     user.updateEmail(email2)
@@ -36,23 +38,20 @@ test("cambiar email del client", () => {
 // validad url
 
 it("validar url", () => {
-    const url = Url.create('https://daa')
-    expect(url.getValue()).toBe('https://daa')
+    const uy = new URL('https://daa')
+    const url = new Url(uy)
+    expect(url.getAddress()).toBe('https://daa/')
 })
-
-it('url invalida lanza error', () => {
-    expect(ValidateEmail.validateEmail('invalid-url')).toBe(false);
-});
 
 
 it('url para imagen', () => {
-    const img = ProductImageUrl.create('https://example.com/image.jpg')
-    expect(img.getValue()).toBe('https://example.com/image.jpg');
+    const uy = new URL('https://example.com/image.jpg')
+    const img = ProductImageUrl.create(uy)
+    expect(img.getAddress()).toBe('https://example.com/image.jpg');
 });
 
 
-const mockClientRepository:  ClientRepository = {
-    // Usamos jest.fn() para rastrear si el método fue llamado y con qué argumentos
+const mockClientRepository: UserRepository = {
     save: jest.fn(),
     findById: jest.fn(),
     findByEmail: jest.fn(),
@@ -63,22 +62,61 @@ const mockClientRepository:  ClientRepository = {
 
 it('debe crear y guardar el cliente si los datos son válidos', async () => {
     // 1. Arrange (Preparar)
-    const command = new CreateClientCommand(
+    const command = new CreateUserCommand(
         'Juan Pérez',
         'juan.perez@dominio.com',
         'Cliente de prueba'
     );
 
-    const handler = new CreateClientHandler(mockClientRepository);
+    const handler = new CreateUserHandler(mockClientRepository);
     await handler.execute(command);
 
     expect(mockClientRepository.save).toHaveBeenCalledTimes(1);
 
 
-    const savedClient = (mockClientRepository.save as jest.Mock).mock.calls[0][0];
-    expect(savedClient).toBeInstanceOf(Client);
+    const savedUser = (mockClientRepository.save as jest.Mock).mock.calls[0][0];
+    expect(savedUser).toBeInstanceOf(User);
 
-    
-    expect(savedClient.getName()).toBe('Juan Pérez');
-    expect(savedClient.getEmail()).toBe('juan.perez@dominio.com');
+
+    expect(savedUser.getName()).toBe('Juan Pérez');
+    expect(savedUser.getEmail()).toBe('juan.perez@dominio.com');
+
 });
+
+
+describe('CreateUserHandler', () => {
+    let useCase: CreateUserHandler;
+    let userRepository: jest.Mocked<UserRepository>;
+
+    beforeEach(() => {
+        userRepository = {
+            save: jest.fn(),
+            findByEmail: jest.fn(),
+            findById: jest.fn(),
+            updateEmail: jest.fn(),
+            updateName: jest.fn(),
+            updateDescription: jest.fn()
+        };
+
+        useCase = new CreateUserHandler(userRepository);
+    });
+
+    it('should create a user successfully', async () => {
+        // Arrange
+        userRepository.findByEmail.mockResolvedValue(null);
+        userRepository.save.mockResolvedValue();
+
+        const command = {
+            name: 'John Doe',
+            email: 'john@example.com',
+            description: 'Test user'
+        };
+
+        // Act
+        await useCase.execute(command);
+
+        // Assert
+        expect(userRepository.findByEmail).toHaveBeenCalledWith('john@example.com');
+        expect(userRepository.save).toHaveBeenCalled();
+    });
+})
