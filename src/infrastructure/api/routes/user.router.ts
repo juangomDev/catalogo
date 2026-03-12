@@ -13,7 +13,8 @@ export class userRouter {
 
     public setRouter(): void {
 
-        this._router.post('/users', (req, res, next) => this.controller.Create(req, res, next));
+        this._router.post('/register', (req, res, next) => this.controller.Create(req, res, next));
+
 
     }
 

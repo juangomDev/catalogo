@@ -4,7 +4,7 @@ import { CreateUserHandler } from '../../../application/user/create_user.handler
 
 export class UserController {
     constructor(
-        private readonly CreateUserHandler: CreateUserHandler
+        private readonly CreateUserHandler: CreateUserHandler,
     ){}
 
     public async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -22,4 +22,5 @@ export class UserController {
             next(error)
         }
     }
+
 }
