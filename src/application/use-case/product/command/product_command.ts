@@ -1,4 +1,5 @@
-import { ICommand } from '../../command/root.command'
+import { ICommand } from "../../../interface/ICommand";
+
 
 export class CreateProductCommand implements ICommand {
     readonly type = "CREATE_PRODUCT" 

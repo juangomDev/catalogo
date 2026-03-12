@@ -1,4 +1,5 @@
-import { ICommand } from "../../command/root.command";
+import { ICommand } from "../../../interface/ICommand";
+
 
 
 export class CreateUserCommand implements ICommand{

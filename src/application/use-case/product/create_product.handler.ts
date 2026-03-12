@@ -1,6 +1,6 @@
-import { Product } from "../../domain/entity/product.entity";
-import { ProductRepository } from "../../domain/repository/product.repository";
-import { ProductImageUrl } from "../../domain/value_object/url.vo";
+import { Product } from "../../../domain/entity/product.entity";
+import { ProductRepository } from "../../../domain/repository/product.repository";
+import { ProductImageUrl } from "../../../domain/value_object/url.vo";
 import { CreateProductCommand } from "./command/product_command";
 
 

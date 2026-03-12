@@ -1,9 +1,9 @@
 import { Email } from "../src/domain/value_object/email.vo";
 import { User } from "../src/domain/entity/user.entity";
 import { ProductImageUrl, Url } from "../src/domain/value_object/url.vo";
-import { CreateUserCommand } from "../src/application/user/command/user_command";
-import { CreateUserHandler } from "../src/application/user/create_user.handler";
 import { UserRepository } from "../src/domain/repository/user.repository";
+import { CreateUserCommand } from "../src/application/use-case/user/command/user_command";
+import { CreateUserHandler } from "../src/application/use-case/user/create_user.handler";
 
 
 test("crear un email valido", () => {
@@ -106,11 +106,11 @@ describe('CreateUserHandler', () => {
         userRepository.findByEmail.mockResolvedValue(null);
         userRepository.save.mockResolvedValue();
 
-        const command = {
-            name: 'John Doe',
-            email: 'john@example.com',
-            description: 'Test user'
-        };
+        const command = new CreateUserCommand(
+            'John Doe',
+            'john@example.com',
+            'Test user'
+        );
 
         // Act
         await useCase.execute(command);

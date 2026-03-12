@@ -1,3 +1,6 @@
+import { MediatorConfig } from "./application/mediator.config";
+import { UserController } from "./infrastructure/api/controllers/user.controller";
+import { userRouter } from "./infrastructure/api/routes/user.router";
 import { ApiServer } from "./infrastructure/api/server";
 
 async function start(): Promise<void> {
@@ -7,7 +10,11 @@ async function start(): Promise<void> {
     // 1. Inicializar base de datos
     // await initializeDatabase();
     
-    const apiServer = new ApiServer( 3000 );
+    MediatorConfig.configure();
+    const userController = new UserController();
+    const UserRouter = new userRouter(userController);
+
+    const apiServer = new ApiServer( 3000, UserRouter.router() );
     await apiServer.start();
 
     console.info('✅ Application started successfully');

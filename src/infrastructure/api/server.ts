@@ -2,18 +2,16 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import cors from 'cors';
-import { userRouter } from './routes/user.router';
-import { UserController } from './controllers/user.controller';
-import { UserPostgresRepository } from '../persistence/repositories/user_repository';
-import { CreateUserHandler } from '../../application/user/create_user.handler';
 
 export class ApiServer {
     private app: express.Application;
     private port: number;
+    private readonly router: express.Router
 
-    constructor(port: number) {
+    constructor(port: number, router: express.Router) {
         this.app = express();
         this.port = port;
+        this.router = router;
         this.setupMiddlewares();
         this.setupRoutes();
     }
@@ -70,12 +68,7 @@ export class ApiServer {
             });
         });
 
-        // API routes
-        const repository = new UserPostgresRepository()
-        const userhandler = new CreateUserHandler(repository)
-        const controller = new UserController(userhandler);
-        const router = new userRouter( controller ) 
-        this.app.use('/api/v1', router.router());
+        this.app.use('/api/v1', this.router);
 
         // Docs
         this.app.use('/api-docs', express.static('docs'));

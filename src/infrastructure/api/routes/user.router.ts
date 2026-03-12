@@ -12,10 +12,9 @@ export class userRouter {
     }
 
     public setRouter(): void {
-
         this._router.post('/register', (req, res, next) => this.controller.Create(req, res, next));
-
-
+        // login 
+        
     }
 
     public router(): Router {

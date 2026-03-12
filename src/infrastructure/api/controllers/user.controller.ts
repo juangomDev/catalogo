@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateUserCommand } from '../../../application/user/command/user_command';
-import { CreateUserHandler } from '../../../application/user/create_user.handler';
+import { mediator } from '../../../application/mediator';
+import { CreateUserCommand } from '../../../application/use-case/user/command/user_command';
 
 export class UserController {
-    constructor(
-        private readonly CreateUserHandler: CreateUserHandler,
-    ){}
+    constructor(){}
 
     public async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
@@ -14,7 +12,7 @@ export class UserController {
 
             const command = new CreateUserCommand(name, email, description);
 
-            await this.CreateUserHandler.execute(command);
+            await mediator.sendCommand(command);
 
             res.status(201).json({ message: 'User created successfully'})
 

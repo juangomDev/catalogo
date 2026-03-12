@@ -1,14 +1,15 @@
+import { UserPostgresRepository } from "../infrastructure/persistence/repositories/user_repository";
 import { mediator } from "./mediator";
-import { CreateUserHandler } from "./user/create_user.handler";
-import { UserRepository } from "../domain/repository/user.repository";
+import { CreateUserCommand } from "./use-case/user/command/user_command";
+import { CreateUserHandler } from "./use-case/user/create_user.handler";
 
 
 export class MediatorConfig {
     static configure() {
 
-        const userRepository = {} as UserRepository; 
+        const userRepository = new UserPostgresRepository();
 
-        mediator.subscribe("CreateUserCommand", new CreateUserHandler( userRepository ) )
+        mediator.subscribeCommand( new CreateUserCommand( '', '', '' ).type, new CreateUserHandler( userRepository ) )
 
     }
 }
