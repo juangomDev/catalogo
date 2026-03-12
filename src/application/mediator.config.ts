@@ -1,7 +1,7 @@
 import { UserPostgresRepository } from "../infrastructure/persistence/repositories/user_repository";
 import { mediator } from "./mediator";
-import { CreateUserCommand } from "./use-case/user/command/user_command";
-import { CreateUserHandler } from "./use-case/user/create_user.handler";
+import { CreateUserCommand } from "./use-case/user/create/command/user_command";
+import { CreateUserHandler } from "./use-case/user/create/create_user.handler";
 
 
 export class MediatorConfig {

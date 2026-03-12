@@ -1,6 +1,4 @@
-import { ICommand } from "../../../interface/ICommand";
-
-
+import { ICommand } from "../../../../interface/ICommand";
 
 export class CreateUserCommand implements ICommand{
     readonly type = "CREATE_USER"

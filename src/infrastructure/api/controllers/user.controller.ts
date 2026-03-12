@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { mediator } from '../../../application/mediator';
-import { CreateUserCommand } from '../../../application/use-case/user/command/user_command';
+import { CreateUserCommand } from '../../../application/use-case/user/create/command/user_command';
 
 export class UserController {
     constructor(){}

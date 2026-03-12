@@ -1,4 +1,4 @@
-import { ICommand } from "../../../interface/ICommand";
+import { ICommand } from "../../../../interface/ICommand";
 
 
 export class CreateProductCommand implements ICommand {

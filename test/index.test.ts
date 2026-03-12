@@ -2,8 +2,8 @@ import { Email } from "../src/domain/value_object/email.vo";
 import { User } from "../src/domain/entity/user.entity";
 import { ProductImageUrl, Url } from "../src/domain/value_object/url.vo";
 import { UserRepository } from "../src/domain/repository/user.repository";
-import { CreateUserCommand } from "../src/application/use-case/user/command/user_command";
-import { CreateUserHandler } from "../src/application/use-case/user/create_user.handler";
+import { CreateUserHandler } from "../src/application/use-case/user/create/create_user.handler";
+import { CreateUserCommand } from "../src/application/use-case/user/create/command/user_command";
 
 
 test("crear un email valido", () => {

@@ -1,7 +1,7 @@
 import { UserController } from '../../../../src/infrastructure/api/controllers/user.controller';
 import { mediator } from '../../../../src/application/mediator';
 import { Request, Response, NextFunction } from 'express';
-import { CreateUserCommand } from '../../../../src/application/use-case/user/command/user_command';
+import { CreateUserCommand } from '../../../../src/application/use-case/user/create/command/user_command';
 
 // Mock the mediator
 jest.mock('../../../../src/application/mediator', () => ({
