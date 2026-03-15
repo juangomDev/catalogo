@@ -9,11 +9,11 @@ export class RootEntity {
         this.createdAt = createdAt
     }
     
-    getId(): string {
+    public get Id(): string {
         return this.id
     }
 
-    getCreatedAt(): Date {
+    public get CreatedAt(): Date {
         return this.createdAt
     }
 }

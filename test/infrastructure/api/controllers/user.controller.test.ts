@@ -23,6 +23,7 @@ describe('UserController', () => {
                 name: 'Test User',
                 email: 'test@example.com',
                 description: 'A test user',
+                password: 'password123',
             },
         };
         mockResponse = {
@@ -39,8 +40,8 @@ describe('UserController', () => {
     describe('Create', () => {
         it('should create a user and return a 201 status code', async () => {
             // Arrange
-            const { name, email, description } = mockRequest.body;
-            const command = new CreateUserCommand(name, email, description);
+            const { name, email, description, password } = mockRequest.body;
+            const command = new CreateUserCommand(name, email, description, password);
 
             // Act
             await userController.Create(mockRequest as Request, mockResponse as Response, mockNext);

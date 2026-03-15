@@ -1,122 +1,107 @@
 import { Email } from "../src/domain/value_object/email.vo";
 import { User } from "../src/domain/entity/user.entity";
 import { ProductImageUrl, Url } from "../src/domain/value_object/url.vo";
-import { UserRepository } from "../src/domain/repository/user.repository";
 import { CreateUserHandler } from "../src/application/use-case/user/create/create_user.handler";
 import { CreateUserCommand } from "../src/application/use-case/user/create/command/user_command";
+import { CreateUserService } from "../src/domain/services/user/create.service";
+import { InvalidEmail } from "../src/domain/exceptions/root.exceptions";
 
+// Mock dependencies for the handler test
+jest.mock('../src/domain/services/user/create.service');
 
-test("crear un email valido", () => {
-    const email = Email.create('t@e.com')
-    expect(email.getValue()).toBe('t@e.com')
-})
+describe('Value Object Tests', () => {
+    describe('Email', () => {
+        it("should create a valid email", () => {
+            const email = new Email('t@e.com');
+            expect(email.getValue()).toBe('t@e.com');
+        });
 
-test("crear un user", () => {
-    const email = Email.create('test@example.com')
-    const user = new User("1", "Test User", email, "A test description", new Date())
+        it("should throw an error for an invalid email", () => {
+            expect(() => {
+                new Email("invalid-email");
+            }).toThrow(InvalidEmail);
 
-    expect(user.getName()).toBe("Test User")
-})
-
-test("email no valido", () => {
-    expect(() => {
-        Email.create("invalid-email")
-    }).toThrow({ message: "Email invalid-email is not valid", name: "InvalidEmailError" })
-})
-
-test("cambiar email del user", () => {
-    const email = Email.create('test@example.com')
-    const user = new User("1", "Test User", email, "A test description", new Date())
-
-    const email2 = Email.create('test2@example.com')
-    user.updateEmail(email2)
-
-
-    expect(user.getEmail()).toBe("test2@example.com")
-})
-
-// validad url
-
-it("validar url", () => {
-    const uy = new URL('https://daa')
-    const url = new Url(uy)
-    expect(url.getAddress()).toBe('https://daa/')
-})
-
-
-it('url para imagen', () => {
-    const uy = new URL('https://example.com/image.jpg')
-    const img = ProductImageUrl.create(uy)
-    expect(img.getAddress()).toBe('https://example.com/image.jpg');
-});
-
-
-const mockClientRepository: UserRepository = {
-    save: jest.fn(),
-    findById: jest.fn(),
-    findByEmail: jest.fn(),
-    updateEmail: jest.fn(),
-    updateName: jest.fn(),
-    updateDescription: jest.fn(),
-};
-
-it('debe crear y guardar el cliente si los datos son válidos', async () => {
-    // 1. Arrange (Preparar)
-    const command = new CreateUserCommand(
-        'Juan Pérez',
-        'juan.perez@dominio.com',
-        'Cliente de prueba'
-    );
-
-    const handler = new CreateUserHandler(mockClientRepository);
-    await handler.execute(command);
-
-    expect(mockClientRepository.save).toHaveBeenCalledTimes(1);
-
-
-    const savedUser = (mockClientRepository.save as jest.Mock).mock.calls[0][0];
-    expect(savedUser).toBeInstanceOf(User);
-
-
-    expect(savedUser.getName()).toBe('Juan Pérez');
-    expect(savedUser.getEmail()).toBe('juan.perez@dominio.com');
-
-});
-
-
-describe('CreateUserHandler', () => {
-    let useCase: CreateUserHandler;
-    let userRepository: jest.Mocked<UserRepository>;
-
-    beforeEach(() => {
-        userRepository = {
-            save: jest.fn(),
-            findByEmail: jest.fn(),
-            findById: jest.fn(),
-            updateEmail: jest.fn(),
-            updateName: jest.fn(),
-            updateDescription: jest.fn()
-        };
-
-        useCase = new CreateUserHandler(userRepository);
+            expect(() => {
+                new Email("invalid-email");
+            }).toThrow("Email invalid-email is not valid");
+        });
     });
 
-    it('should create a user successfully', async () => {
-        // Arrange
-        userRepository.findByEmail.mockResolvedValue(null);
-        userRepository.save.mockResolvedValue();
+    describe('Url', () => {
+        it("should create a valid Url object", () => {
+            const urlInput = new URL('https://example.com');
+            const url = new Url(urlInput);
+            expect(url.getAddress()).toBe('https://example.com/');
+        });
 
+        it('should create a valid ProductImageUrl', () => {
+            const urlInput = new URL('https://example.com/image.jpg');
+            const img = ProductImageUrl.create(urlInput);
+            expect(img.getAddress()).toBe('https://example.com/image.jpg');
+        });
+
+        it('should throw an error for an invalid ProductImageUrl', () => {
+            const urlInput = new URL('https://example.com/document.pdf');
+            expect(() => {
+                ProductImageUrl.create(urlInput)
+            }).toThrow('The image url must end with a valid image extension .jpg, .jpeg, .png, .webp, .gif, .svg');
+        });
+    });
+});
+
+describe('CreateUserHandler', () => {
+    let createUserHandler: CreateUserHandler;
+    let mockCreateUserService: jest.Mocked<CreateUserService>;
+
+    beforeEach(() => {
+        // We mock the service that the handler depends on
+        mockCreateUserService = new CreateUserService(null, null, null) as jest.Mocked<CreateUserService>;
+        
+        // Instantiate the handler with the mocked service
+        createUserHandler = new CreateUserHandler(mockCreateUserService);
+
+        // Mock the implementation of the service's execute method
+        mockCreateUserService.execute = jest.fn();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should call the create user service with the correct parameters', async () => {
+        // Arrange
         const command = new CreateUserCommand(
             'John Doe',
-            'john@example.com',
-            'Test user'
+            'john.doe@example.com',
+            'A test user',
+            'password123'
         );
 
         // Act
-        await useCase.execute(command);
+        await createUserHandler.handler(command);
 
         // Assert
-        expect(userRepository.findByEmail).toHaveBeenCalledWith('john@example.com');
-        expect(userRepository.save).toHaveBeenCalled();
+        expect(mockCreateUserService.execute).toHaveBeenCalledTimes(1);
+        expect(mockCreateUserService.execute).toHaveBeenCalledWith(
+            'John Doe',
+            'john.doe@example.com',
+            'password123',
+            'A test user'
+        );
     });
-})
+
+    it('should propagate errors from the service', async () => {
+        // Arrange
+        const command = new CreateUserCommand(
+            'John Doe',
+            'john.doe@example.com',
+            'A test user',
+            'password123'
+        );
+        const testError = new Error('Service failure');
+        (mockCreateUserService.execute as jest.Mock).mockRejectedValue(testError);
+
+        // Act & Assert
+        await expect(createUserHandler.handler(command)).rejects.toThrow(testError);
+    });
+});

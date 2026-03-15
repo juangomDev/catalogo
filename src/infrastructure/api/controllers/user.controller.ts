@@ -8,9 +8,9 @@ export class UserController {
     public async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             
-            const { name, email, description } = req.body;
+            const { name, email, description, password } = req.body;
 
-            const command = new CreateUserCommand(name, email, description);
+            const command = new CreateUserCommand(name, email, description, password);
 
             await mediator.sendCommand(command);
 

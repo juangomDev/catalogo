@@ -17,7 +17,7 @@ class Mediator {
             throw new Error(`Command handler not found for ${command.type}`);
         }
 
-        return await handler.execute(command);
+        return await handler.handler(command);
     }
 
     subscribeQuery<TQuery extends IQuery, TResult>(queryType: string, handler: IQueryHandler<TQuery, TResult>): void {
@@ -31,7 +31,7 @@ class Mediator {
             throw new Error(`Query handler not found for ${query.type}`);
         }
 
-        return await handler.execute(query);
+        return await handler.handler(query);
     }
 }
 

@@ -1,21 +1,12 @@
 import { InvalidName } from "../exceptions/root.exceptions";
-import { Email } from "../value_object/email.vo";
 import { RootEntity } from "./root.entity";
 
-type UserDTO = {
-    id: string;
-    name: string;
-    email: string;
-    description: string;
-    createdAt: Date;
-}
 
 export class User extends RootEntity {
     private name: string;
-    private email: Email;
     private description: string;
 
-    constructor(id: string, name: string, email: Email, description: string, createdAt: Date) {
+    constructor(id: string, name: string, description: string, createdAt: Date) {
 
         if (!name || name.trim().length === 0) {
             throw new InvalidName('The name cannot be empty');
@@ -23,7 +14,6 @@ export class User extends RootEntity {
 
         super(id, createdAt)
         this.name = name
-        this.email = email
         this.description = description
     }
 
@@ -36,33 +26,15 @@ export class User extends RootEntity {
     public updateDescription(newDescription: string): void {
         this.description = newDescription
     }
-
-    public updateEmail(newEmail: Email): void {
-        this.email = newEmail
-    }
     
 
 
 
-    public getName(): string {
+    public get Name(): string {
         return this.name
     }
 
-    public getDescription(): string {
+    public get Description(): string {
         return this.description
-    }
-
-    public getEmail(): string {
-        return this.email.getValue()
-    }
-
-    public DTO(): UserDTO {
-        return {
-            id: this.getId(),
-            name: this.name,
-            email: this.email.getValue(),
-            description: this.description,
-            createdAt: this.getCreatedAt()   
-        }
     }
 }
