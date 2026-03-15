@@ -1,5 +1,4 @@
 import { Email } from "../src/domain/value_object/email.vo";
-import { User } from "../src/domain/entity/user.entity";
 import { ProductImageUrl, Url } from "../src/domain/value_object/url.vo";
 import { CreateUserHandler } from "../src/application/use-case/user/create/create_user.handler";
 import { CreateUserCommand } from "../src/application/use-case/user/create/command/user_command";
@@ -55,7 +54,7 @@ describe('CreateUserHandler', () => {
 
     beforeEach(() => {
         // We mock the service that the handler depends on
-        mockCreateUserService = new CreateUserService(null, null, null) as jest.Mocked<CreateUserService>;
+        mockCreateUserService = new CreateUserService(null as any, null as any, null as any) as jest.Mocked<CreateUserService>;
         
         // Instantiate the handler with the mocked service
         createUserHandler = new CreateUserHandler(mockCreateUserService);

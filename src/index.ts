@@ -1,7 +1,7 @@
-import { MediatorConfig } from "./application/mediator.config";
 import { UserController } from "./infrastructure/api/controllers/user.controller";
 import { userRouter } from "./infrastructure/api/routes/user.router";
 import { ApiServer } from "./infrastructure/api/server";
+import { MediatorConfig } from "./infrastructure/config/mediator.config";
 
 async function start(): Promise<void> {
   try {
