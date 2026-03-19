@@ -21,8 +21,11 @@ export class Product extends RootEntity {
         this.imageUrl = imageUrl
     }
 
-    public updateName(Name: string): void {
-        this.name = Name
+    public updateName(newName: string): void {
+        if (!newName || newName.trim().length === 0) {
+            throw new InvalidName('The product name cannot be empty');
+        }
+        this.name = newName
     }
 
     public updateDescription(Description: string): void {

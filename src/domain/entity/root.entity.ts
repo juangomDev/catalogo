@@ -1,19 +1,19 @@
 
 
 export class RootEntity {
-    private readonly id: string;
-    private readonly createdAt: Date;
+    private readonly _id: string;
+    private readonly _createdAt: Date;
 
     constructor(id: string, createdAt: Date) {
-        this.id = id
-        this.createdAt = createdAt
+        this._id = id
+        this._createdAt = createdAt
     }
     
-    public get Id(): string {
-        return this.id
+    public get id(): string {
+        return this._id
     }
 
-    public get CreatedAt(): Date {
-        return this.createdAt
+    public get createdAt(): Date {
+        return this._createdAt
     }
 }

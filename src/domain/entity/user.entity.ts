@@ -3,38 +3,38 @@ import { RootEntity } from "./root.entity";
 
 
 export class User extends RootEntity {
-    private name: string;
-    private description: string;
+    private _name: string;
+    private _description: string;
 
     constructor(id: string, name: string, description: string, createdAt: Date) {
 
-        if (!name || name.trim().length === 0) {
-            throw new InvalidName('The name cannot be empty');
-        }
+        if (!name || name.trim().length === 0) throw new InvalidName('The name cannot be empty');
 
         super(id, createdAt)
-        this.name = name
-        this.description = description
+        this._name = name
+        this._description = description
     }
 
 
 
     public updateName(newName: string): void {
-        this.name = newName
+        if (!newName || newName.trim().length === 0) throw new InvalidName('The name cannot be empty');
+
+        if (this._name !== newName) this._name = newName;
     }
 
     public updateDescription(newDescription: string): void {
-        this.description = newDescription
+        if (this._description !== newDescription) this._description = newDescription
     }
     
 
 
 
-    public get Name(): string {
-        return this.name
+    public get name(): string {
+        return this._name
     }
 
-    public get Description(): string {
-        return this.description
+    public get description(): string {
+        return this._description
     }
 }

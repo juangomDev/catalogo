@@ -21,41 +21,30 @@ export class InvalidName extends ExceptionsDomain {
 }
 
 
-
-
-
 export class InvalidImageFormat extends ExceptionsDomain {
-
-
   constructor(message: string) {
-
-
     super(message);
-
-
   }
-
-
 }
 
 
-
-
-
-
-
-
 export class UserAlreadyExists extends ExceptionsDomain {
-
-
   constructor(email: string) {
-
-
     super(`User with email ${email} already exists`);
-
-
   }
+}
 
 
+export class invalidCredentials extends ExceptionsDomain {
+  constructor(email: string) {
+    super(email);
+  }
+}
+
+
+export class UserNotFound extends ExceptionsDomain {
+  constructor(email: string) {
+    super(email);
+  }
 }
 
